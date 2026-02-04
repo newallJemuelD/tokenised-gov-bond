@@ -1,13 +1,25 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import type {
+  Whitelist,
+  BondToken,
+  MockCBDC,
+  DvPSettlement,
+} from "../typechain-types";
+import type {
+  Whitelist__factory,
+  BondToken__factory,
+  MockCBDC__factory,
+  DvPSettlement__factory,
+} from "../typechain-types";
 
 describe("Tokenised Gov Bond - Permissioned DvP", function () {
   it("whitelist gating + issuer mint + atomic DvP", async () => {
     const [admin, issuer, centralBank, seller, buyer, outsider] = await ethers.getSigners();
 
     // Deploy Whitelist (admin is deployer)
-    const Whitelist = await ethers.getContractFactory("Whitelist");
-    const wl = await Whitelist.connect(admin).deploy();
+    const Whitelist = (await ethers.getContractFactory("Whitelist")) as Whitelist__factory;
+    const wl = (await Whitelist.connect(admin).deploy()) as Whitelist;
     await wl.waitForDeployment();
 
     // Whitelist institutions (issuer, central bank, seller, buyer)
